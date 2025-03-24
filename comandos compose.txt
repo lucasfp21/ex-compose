@@ -1,0 +1,36 @@
+Docker Compose:
+    Gerenciado por um arquivo yaml (geralmente compose.yaml)
+    o arquivoé declarativo entao basicamente temos parametros declaraos e valores atribuidos para esses parametros
+
+    O 1 parametro é a versao do arquivo:
+        version (ele nao é mais usado a partir da versao 2 do compose)
+        ex:
+            version: "3.8"
+
+    0 2 parametro é p services:
+        basicamente é onde nos declaramos os containers que farao parte desse yaml.
+        ex:
+            services:
+                ngnix:
+                    container_name: nginx
+                    image: nginx:latest
+                    ports:
+                        - 8080:80
+                    command:
+                        - echo
+                        - hellow world
+
+    
+    para subir um docker Compose:  
+        docker compose -f </caminho/do/arquivo/yaml> up
+        ou docker compose up 
+        para exexutar em background:
+            docker compose up -d
+
+    após qualquer alteracao no yaml basta aplicar novamente usando o comando docker compose up que ele altera somente o que foi alterado no yaml
+    
+    para naixar um docker Compose:
+        docker compose down
+            fora isso ainda temos os comandos:
+                docker compose stop (para parar os containers)
+                docker compose start (para voltar os containers)

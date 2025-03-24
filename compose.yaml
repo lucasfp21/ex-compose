@@ -1,0 +1,17 @@
+# version: "3.8"
+
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - 8081:80
+  #  command:
+  #    - echo
+  #    - hello world
+
+  nginx2:
+    container_name: nginx2
+    image: nginx:latest
+    ports:
+      - 8181:80
