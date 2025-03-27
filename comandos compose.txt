@@ -26,6 +26,8 @@ Docker Compose:
         ou docker compose up 
         para exexutar em background:
             docker compose up -d
+        para remover os container orfaos (em caso de sobreecrever algum no compose.yaml)
+            docker compose up -d --remove-orphans
 
     após qualquer alteracao no yaml basta aplicar novamente usando o comando docker compose up que ele altera somente o que foi alterado no yaml
     
@@ -34,3 +36,38 @@ Docker Compose:
             fora isso ainda temos os comandos:
                 docker compose stop (para parar os containers)
                 docker compose start (para voltar os containers)
+    usando volume do tipo bind
+        volumes:
+          - C:\Users\lucas\Documents\DevopsPro\kubenews\kube-news\db_volume:/var/lib/postgresql/data
+
+    para declarar um volume, tambem podemos criar um sessao volumes no mesmo nivel de identacao do services e declarar ali um volume    
+        volumes:
+            <nome volume>:
+            external: true
+             usado para "linkar" volumes criados por fora.
+
+    para adicionar um rede, basta adicionar a o parametro networks no documento yaml
+        networks:
+         kubenews_net:
+           driver: bridge
+
+Exemplo de compose usando variaveis de ambiente:
+    # version: "3.8"
+
+    services:
+    postgre:
+        container_name: postgresql
+        image: postgres:12.17
+        ports:
+            - 5432:5432
+        environment:
+            POSTGRES_PASSWORD: Pg123
+            POSTGRES_USER: kubenews
+            POSTGRES_DB: kubenews
+    volumes:
+      postgre_docker_vol:
+
+    networks:
+       kubenews_net:
+         driver: bridge
+        
