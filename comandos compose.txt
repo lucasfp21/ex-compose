@@ -51,23 +51,61 @@ Docker Compose:
          kubenews_net:
            driver: bridge
 
-Exemplo de compose usando variaveis de ambiente:
-    # version: "3.8"
+    tudo que for declarado como paramentro no compose file, tem que ser refrenciado no paramentro services, que é a declaracao do container
 
-    services:
-    postgre:
-        container_name: postgresql
-        image: postgres:12.17
-        ports:
-            - 5432:5432
-        environment:
-            POSTGRES_PASSWORD: Pg123
-            POSTGRES_USER: kubenews
-            POSTGRES_DB: kubenews
+    Exemplo usando o driver de rede to tipo host:
+        services:
+          nginx:
+            image: nginx
+            # network_mode é usado para especificar o tipo de rede 
+            network_mode: host
+
+          curl:
+            image: nginx
+            #extra_hosts é usado para setar dns no arquivo /etc/hosts do container
+            extra_hosts:
+              aula.docker.lucas.com: "<ip>"
+
+
+
+Exemplo de compose usando variaveis de ambiente e varios services:
+# version: "3.8"
+
+services:
+  postgre:
+    container_name: postgresql
+    image: postgres:12.17
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: Pg123
+      POSTGRES_USER: kubenews
+      POSTGRES_DB: kubenews
     volumes:
-      postgre_docker_vol:
-
+    #  - C:\Users\lucas\Documents\DevopsPro\kubenews\kube-news\db_volume:/var/lib/postgresql/data
+      - postgre_voldb:/var/#lib/postgresql/data
     networks:
-       kubenews_net:
-         driver: bridge
-        
+      - kubenews_net
+
+  kubenews:
+    container_name: kube-web
+    image: lufertony/kube-news:v1
+    ports:
+      - 8080:8080
+    networks:
+      - kubenews_net
+    environment:
+      DB_PASSWORD: Pg123
+      DB_USERNAME: kubenews
+      DB_DATABASE: kubenews
+      DB_HOST: postgresql
+
+
+volumes:
+  postgre_voldb:
+    name: meu_postgre_voldb
+  #  external: true
+
+networks:
+  kubenews_net:
+    driver: bridge
