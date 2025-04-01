@@ -66,48 +66,74 @@ Docker Compose:
             extra_hosts:
               aula.docker.lucas.com: "<ip>"
 
-
     depends_on:
-      - <nome do service>
+       <nome do service>
        é usado para definir prioridades de execucao no momento da criacao do container
+       para garantir que o service espere para iniciar corretamente podemos utilizar a opcao healthcheck no paramentro depends_on:
+        depends_on:
+          <nome do service>:
+            condition: service_healthy
+
+    lembrar de adicionar a parte de healthcheck la no service que sera testado:
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U kubenews"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+
+    PS. para usar o depends_on as vezes nao funciona junto com service name e o DB host tem que ter o mesmo nome do service no caso de banco
 Exemplo de compose usando variaveis de ambiente e varios services:
 # version: "3.8"
-
-services:
-  postgre:
-    container_name: postgresql
-    image: postgres:12.17
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_PASSWORD: Pg123
-      POSTGRES_USER: kubenews
-      POSTGRES_DB: kubenews
-    volumes:
-    #  - C:\Users\lucas\Documents\DevopsPro\kubenews\kube-news\db_volume:/var/lib/postgresql/data
-      - postgre_voldb:/var/#lib/postgresql/data
-    networks:
-      - kubenews_net
-
-  kubenews:
-    container_name: kube-web
-    image: lufertony/kube-news:v1
-    ports:
-      - 8080:8080
-    networks:
-      - kubenews_net
-    environment:
-      DB_PASSWORD: Pg123
-      DB_USERNAME: kubenews
-      DB_DATABASE: kubenews
-      DB_HOST: postgresql
+  services:
+    postgre:
+    #  container_name: postgresql
+      image: postgres:12.17
+      ports:
+        - 5432:5432
+      environment:
+        POSTGRES_PASSWORD: Pg123
+        POSTGRES_USER: kubenews
+        POSTGRES_DB: kubenews
+      volumes:
+      #  - C:\Users\lucas\Documents\DevopsPro\kubenews\kube-news\db_volume:/var/lib/postgresql/data
+        - postgre_voldb:/var/#lib/postgresql/data
+      networks:
+        - kubenews_net
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U kubenews"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
 
 
-volumes:
-  postgre_voldb:
-    name: meu_postgre_voldb
-  #  external: true
+    kubenews:
+     # container_name: kube-web
+      image: lufertony/kube-news
+      depends_on:
+        postgre:
+          condition: service_healthy
 
-networks:
-  kubenews_net:
-    driver: bridge
+      build:
+        context: ./src
+        dockerfile: Dockerfile
+      ports:
+        - 8080:8080
+      networks:
+        - kubenews_net
+
+      environment:
+        DB_PASSWORD: Pg123
+        DB_USERNAME: kubenews
+        DB_DATABASE: kubenews
+        DB_HOST: postgre
+
+
+  volumes:
+    postgre_voldb:
+      name: meu_postgre_voldb
+    #  external: true
+
+  networks:
+    kubenews_net:
+      driver: bridge
+      name: kubenews_net
