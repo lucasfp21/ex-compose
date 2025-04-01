@@ -67,7 +67,9 @@ Docker Compose:
               aula.docker.lucas.com: "<ip>"
 
 
-
+    depends_on:
+      - <nome do service>
+       é usado para definir prioridades de execucao no momento da criacao do container
 Exemplo de compose usando variaveis de ambiente e varios services:
 # version: "3.8"
 
