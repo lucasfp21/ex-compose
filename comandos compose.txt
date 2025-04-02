@@ -88,7 +88,32 @@ Docker Compose:
       é possivel usar no compose up tambem:
         docker compose --env-file hol.env up -d
       se o nome arquivo for .env entao nao é necessario passar a flag --env-file
-      
+
+  Exemplo de uso de valor padrao na variavel de ambiente:
+    image: lufertony/kube-news:${KB_TAG:- latest}
+      aqui definimos uma variavel para a tag da image e definimo o valor latest como default
+
+  docker tag minha-imagem:v4 minha-imagem:latest
+    usado para transfomar sua imagem mais recente como latest
+
+  docker compose config
+    usado para mostrar o resultado mas sem buildar ou rodar de fato o compose
+
+  podemos criar uma yaml por service e extender no compose principal, basta adicionar no compose principal os parametros
+  web:
+    extends:
+      file: ./kn-compose.yaml
+      service: kubenews
+    image: lufertony/web-news:latest
+
+      extends é o tipo 
+      file é o path do arquivo yaml que tem o servico que queremos incorporar
+      service é o nome do service daquele yaml que queremo executar (yaml pode ter varios services)
+      image é um paramentro novo que esta sendo sobrescrito aqui
+
+    em caso de warning de orphans 
+      docker compose -d --build --remove-orphans
+
 Exemplo de compose usando variaveis de ambiente e varios services:
 # version: "3.8"
   services:
