@@ -82,6 +82,13 @@ Docker Compose:
         retries: 5
 
     PS. para usar o depends_on as vezes nao funciona junto com service name e o DB host tem que ter o mesmo nome do service no caso de banco
+
+  docker compose --env-file hol.env up -d --build
+    usado para  especificar um arquivo de variaveis de ambiente para ser usado no build
+      é possivel usar no compose up tambem:
+        docker compose --env-file hol.env up -d
+      se o nome arquivo for .env entao nao é necessario passar a flag --env-file
+      
 Exemplo de compose usando variaveis de ambiente e varios services:
 # version: "3.8"
   services:
