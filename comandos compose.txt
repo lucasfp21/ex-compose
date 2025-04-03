@@ -114,6 +114,59 @@ Docker Compose:
     em caso de warning de orphans 
       docker compose -d --build --remove-orphans
 
+    merge:
+      ele une dois ou mais composes (se for um compose padrao e um arquivo compose chamado compose.override.yaml nao é necessario adicionar nenhum paramentro nos comandos)
+        em caso de nome diferentes do padrao para o segundo compose ( =! compose.override.yaml)
+          docker compose -f compose.yaml -f <nome do seundo compose> config ou up -d
+
+          exemplo de  compose override:
+            services:
+              postgre:
+                ports:
+                  - 9000:9000
+          nesse exemplo estamos adicionando a porta 9000 no service postgre
+
+    include:
+      basicamente adicionar recursos (services e outros) no compose mapeando o yaml, ex:
+        include:
+          - /path/do/arquivo/yaml
+
+    profiles:
+      basicamente um recurso que garante que determidado servico ou recurso só vai ser criado no profile correto:
+          web:
+            extends:
+              file: ./kn-compose.yaml
+              service: kubenews
+            image: lufertony/web-news:latest
+            profiles:
+              - dev
+              - hml
+
+        nesse exemplo o service web so sera criado se passar o prifile dev ou hml no comando:
+          docker compose --profile dev up -d 
+
+    principais comandos do compose:
+      docker compose up -d
+        para rodar sem travar o terminal
+
+      docker compose down para baixar 
+      docker compose up -d --build
+        para construir a imagem e subir os services, tem que ter o build setado no yaml
+      docker compose up -d --remove-orphans
+        para remover containers orfaos
+      docker compose ps 
+        mostra so os container que faz parte do compose
+      docker compose logs
+        mostra os logs
+          para ver de um service especifico:
+            docker compose logs <nome do service>
+      docker compose exec
+        roda um comando dentro do service
+          docker compose exec <nome do service> <comando>
+      docker compose pull/push/build
+        ele faz o pull/push/build das imagens que tem no compose
+      
+
 Exemplo de compose usando variaveis de ambiente e varios services:
 # version: "3.8"
   services:
