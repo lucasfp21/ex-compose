@@ -166,6 +166,55 @@ Docker Compose:
       docker compose pull/push/build
         ele faz o pull/push/build das imagens que tem no compose
       
+docker info:
+  mostra informações completas sobre o docker instalado na maquina
+
+docker events:
+  ele mostra todos os eventos acontecendo em tempo real, ele trava o terminal e tudo que voce executar em outro terminal no docker ele mostra
+  
+  docker events --since 2h
+    mostra os eventos desde duas horas atras ate o momento
+  
+  docker events --until 30m
+    vai mostrar todos os eventos atenteriores ate 30 minutos atras
+
+  docker events --filter event=create 
+    mostra somente ocorrencias de eventos de criação, podemos usar qualquer evento no filtro (delete, destroy etc)
+
+  docker events --filter type=image
+    mostra somente eventos daquele tipo passado no comando, podemos usar para todos os tipo do docker
+
+  docker logs <nome ou id do container>
+    mostra os logs do container
+      paramentros:
+        --follow
+          para manter os logs mostrando
+        --since 01m
+          desde 01 atras
+            podemos usar o since para definir um montento exato para comecar os logs
+              docker logs <id> --since '2025-04-07T19:08:00Z'
+        --until 1m
+          ate 1m atras
+        --tail 3
+          mostra as ultimas 3 linhas de logs
+  
+  docker inspect <id ou nome>
+    mostra as info do objeto passado no comando
+
+  docker top <id ou nome do container>
+    mostra os processo do recurso passado no comando
+
+  docker stats:
+    mostra o consumo de recursos que dos containeres
+      --no-stream
+        nao fica atualizando as estatisticas
+      --no-trunc
+        melhora e exibicao das estatisticas
+
+  docker exec <id> <comando>
+    executa um comando dentro do container passado no comando
+    docker exec -it <id ou nome> /bin/bash
+      entra em modo interativo no container passado no comando
 
 Exemplo de compose usando variaveis de ambiente e varios services:
 # version: "3.8"
